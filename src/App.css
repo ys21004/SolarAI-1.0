@@ -1,0 +1,898 @@
+.App {
+  text-align: left;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.nav-group {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.nav-links button {
+  background: none;
+  border: none;
+  color: white;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.nav-links button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.nav-links button.active {
+  background: rgba(76, 175, 80, 0.2);
+  color: #4CAF50;
+}
+
+.logout-button {
+  background: rgba(244, 67, 54, 0.2) !important;
+  color: #ff6b6b !important;
+}
+
+.logout-button:hover {
+  background: rgba(244, 67, 54, 0.3) !important;
+}
+
+.main-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1;
+  padding: 2rem;
+}
+
+.search-bar {
+  grid-column: 1 / -1;
+  margin-bottom: 1rem;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.filters {
+  display: flex;
+  gap: 1rem;
+}
+
+.filters select {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  flex: 1;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.dashboard-container {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.status-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.status-indicator {
+  margin-top: 1rem;
+}
+
+.status-indicator .dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background-color: #4CAF50;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+/* Tech Portal Styles */
+.tech-portal {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.inspection-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.form-group label {
+  font-weight: 500;
+  color: #333;
+  font-size: 0.8rem;
+  margin-bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 0.4rem 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  background-color: #f9f9f9;
+  transition: all 0.2s ease;
+  height: 32px;
+  width: 95%;
+  color: #333;
+}
+
+/* Ensure all select dropdowns have consistent width */
+.form-group select {
+  width: 95%;
+  appearance: menulist; /* Show the native dropdown arrow */
+  -webkit-appearance: menulist;
+  -moz-appearance: menulist;
+  height: 32px; /* Match the height of other inputs */
+  line-height: 1; /* Help with vertical alignment */
+  padding: 0.4rem 0.5rem; /* Match other inputs padding */
+}
+
+.form-group textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.submit-btn,
+.clear-btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.submit-btn {
+  background-color: #1a237e;
+  color: white;
+  flex: 2;
+}
+
+.clear-btn {
+  background-color: #f5f5f5;
+  color: #333;
+  flex: 1;
+}
+
+.submit-btn:hover {
+  background-color: #283593;
+}
+
+.clear-btn:hover {
+  background-color: #e0e0e0;
+}
+
+/* Maintenance History Styles */
+.maintenance-history {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.history-filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.history-filters select,
+.history-filters input {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.date-range {
+  display: flex;
+  gap: 1rem;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.history-table th,
+.history-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.status-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+}
+
+.status-badge.completed {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-badge.pending {
+  background-color: #fff3e0;
+  color: #ef6c00;
+}
+
+.view-btn,
+.edit-btn {
+  padding: 0.25rem 0.75rem;
+  border: none;
+  border-radius: 4px;
+  margin-right: 0.5rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.view-btn {
+  background-color: #e3f2fd;
+  color: #1565c0;
+}
+
+.edit-btn {
+  background-color: #f5f5f5;
+  color: #424242;
+}
+
+/* Admin Panel Styles */
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.stat-card h3 {
+  margin: 0 0 1rem 0;
+  color: #333;
+}
+
+.stat-card p {
+  font-size: 2rem;
+  margin: 0;
+  color: #1a237e;
+  font-weight: 500;
+}
+
+.admin-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.action-group {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.action-group h3 {
+  margin: 0 0 1rem 0;
+  color: #333;
+}
+
+.action-group button {
+  display: block;
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #1a237e;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.action-group button:last-child {
+  margin-bottom: 0;
+}
+
+.action-group button:hover {
+  background-color: #283593;
+}
+
+.chart-placeholder {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  text-align: center;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+}
+
+.inspection-list {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-top: 1rem;
+}
+
+.inspection-item {
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s ease;
+}
+
+.inspection-item:hover {
+  background-color: #f8f9fa;
+}
+
+.inspection-item:last-child {
+  border-bottom: none;
+}
+
+.inspection-item p {
+  margin: 0 0 0.5rem 0;
+  font-weight: 500;
+}
+
+.inspection-item span {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.footer {
+  background-color: #1a237e;
+  color: white;
+  padding: 2rem 0;
+  margin-top: 2rem;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.footer-section h4 {
+  margin: 0 0 1rem 0;
+  font-size: 1.2rem;
+  color: #fff;
+  font-weight: 600;
+}
+
+.footer-section p {
+  margin: 0.5rem 0;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+  font-size: 0.9rem;
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-section ul li {
+  margin-bottom: 0.5rem;
+}
+
+.footer-section ul li .footer-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+  cursor: pointer; 
+  text-align: left;
+  width: 100%;
+  transition: color 0.2s ease;
+}
+
+.footer-section ul li .footer-link:hover {
+  color: white;
+}
+
+.footer-section ul li a {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  transition: color 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.footer-section ul li a:hover {
+  color: white;
+}
+
+.footer-bottom {
+  max-width: 1200px;
+  margin: 2rem auto 0;
+  padding: 1rem 2rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+
+.footer-bottom p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+}
+
+/* Solar Maintenance Styles */
+.solar-maintenance {
+  max-width: 800px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 1.5rem;
+}
+
+.solar-maintenance h2 {
+  color: #1a237e;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.maintenance-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin-bottom: 0.25rem;
+  position: relative;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+  margin-top: 0.25rem;
+}
+
+.form-group label {
+  font-weight: 500;
+  color: #333;
+  font-size: 0.8rem;
+  margin-bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.unit-indicator {
+  color: #666;
+  font-size: 0.75rem;
+  font-weight: normal;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 0.4rem 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  background-color: #f9f9f9;
+  transition: all 0.2s ease;
+  height: 32px;
+  width: 95%;
+  color: #333;
+}
+
+.form-group textarea {
+  height: auto;
+  min-height: 60px;
+  width: 98%;
+}
+
+/* Input with unit styling */
+.input-with-unit {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 95%;
+}
+
+.input-with-unit input {
+  width: 100%;
+  padding-right: 30px;
+  color: #333;
+}
+
+.unit-symbol {
+  position: absolute;
+  right: 10px;
+  font-size: 0.85rem;
+  color: #555;
+  font-weight: 500;
+}
+
+.upload-area {
+  padding: 1rem;
+  border: 1px dashed #ddd;
+  border-radius: 4px;
+  text-align: center;
+  background-color: #f9f9f9;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  position: relative;
+  margin-top: 0.25rem;
+  width: 98%;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.75rem;
+}
+
+.analyze-btn {
+  background: #1a237e;
+  color: white;
+  border: none;
+  padding: 0.5rem 1.5rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 180px;
+}
+
+.analysis-results {
+  margin-top: 1.5rem;
+  background-color: #f0f7ff;
+  border-radius: 4px;
+  padding: 1rem;
+  border: 1px solid rgba(26, 35, 126, 0.2);
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.result-card {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+@media (max-width: 992px) {
+  .form-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .result-card {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .result-card {
+    grid-template-columns: 1fr;
+  }
+
+  .navbar {
+    padding: 1rem;
+  }
+
+  .nav-links {
+    gap: 0.5rem;
+  }
+
+  .nav-links button {
+    padding: 0.5rem;
+  }
+
+  .content {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .solar-maintenance {
+    padding: 1rem;
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+  }
+  
+  .input-with-unit {
+    width: 100%;
+  }
+}
+
+/* Ensure all form groups have consistent styling */
+.solar-maintenance .form-group label {
+  color: #333; /* Explicitly set color for labels in the maintenance panel */
+  font-weight: 600; /* Make them slightly bolder */
+}
+
+/* Solar Maintenance Form Consistency */
+.solar-maintenance .form-grid {
+  gap: 0.5rem; /* Slightly reduce gap for better alignment */
+}
+
+.solar-maintenance .form-group {
+  margin-bottom: 0.5rem;
+}
+
+/* Make all form controls consistent */
+.solar-maintenance .form-group input,
+.solar-maintenance .form-group select,
+.solar-maintenance .form-group textarea {
+  height: 32px;
+  box-sizing: border-box;
+  padding: 0.4rem 0.5rem;
+  width: 95%;
+}
+
+/* Separate rule for dropdowns to handle browser differences */
+.solar-maintenance .form-group select {
+  height: 32px !important; /* Force consistent height */
+  line-height: normal;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(255, 255, 255, 0.1);
+  border-top-color: #4CAF50;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-top: 2rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Dashboard Styles */
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 100%;
+}
+
+.panel-summary {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.summary-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.summary-card h3 {
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.summary-value {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin: 0;
+  color: #ffffff;
+}
+
+.panel-list {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.panels-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.panel-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #4CAF50;
+}
+
+.panel-card.maintenance-required {
+  border-left-color: #FF9800;
+}
+
+.panel-card.needs-repair {
+  border-left-color: #F44336;
+}
+
+.panel-card h3 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #ffffff;
+}
+
+.panel-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.panel-details p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.no-data {
+  color: rgba(255, 255, 255, 0.6);
+  font-style: italic;
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.maintenance-history-section {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}

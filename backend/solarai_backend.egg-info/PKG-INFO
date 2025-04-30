@@ -1,0 +1,8 @@
+Metadata-Version: 2.4
+Name: solarai-backend
+Version: 0.1
+Requires-Dist: flask
+Requires-Dist: flask-cors
+Requires-Dist: firebase-admin
+Requires-Dist: python-dotenv
+Dynamic: requires-dist

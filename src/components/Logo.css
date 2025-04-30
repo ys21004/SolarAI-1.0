@@ -1,0 +1,59 @@
+.logo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.logo-container.small {
+  transform: none;
+}
+
+.logo-container.small .brand-title {
+  font-size: 1.25rem;
+  margin: 0;
+  font-weight: 500;
+}
+
+.logo-container.medium {
+  transform: scale(1);
+}
+
+.logo-container.large {
+  transform: scale(1.3);
+  transform-origin: left;
+}
+
+.brand-title {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0;
+  line-height: 1.2;
+  letter-spacing: -1px;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.brand-highlight {
+  color: #4CAF50;
+  position: relative;
+}
+
+.brand-tagline {
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  opacity: 0.9;
+  font-weight: 300;
+  color: white;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
+} 
