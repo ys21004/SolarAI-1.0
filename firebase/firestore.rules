@@ -25,104 +25,61 @@ service cloud.firestore {
     // Validate maintenance record data
     function isValidMaintenanceRecord() {
       let requiredFields = ['panelId', 'technicianName', 'type', 'status'];
-      let hasAllRequired = requiredFields.every(field => request.resource.data[field] != null);
+      let hasAllRequired = requiredFields.hasAll(request.resource.data.keys());
       
       let validStatuses = ['Completed', 'Pending', 'Critical', 'In Progress'];
-      let hasValidStatus = validStatuses.contains(request.resource.data.status);
+      let hasValidStatus = validStatuses.hasAny([request.resource.data.status]);
       
       return hasAllRequired && hasValidStatus;
     }
     
     // Validate panel data
     function isValidPanel() {
-      let requiredFields = ['name', 'dcPower', 'acPower', 'ambientTemp', 'moduleTemp', 'irradiation'];
-      let hasAllRequired = requiredFields.every(field => request.resource.data[field] != null);
+      let requiredFields = ['name', 'dc_power', 'ac_power', 'ambient_temp', 'module_temp', 'irradiation'];
+      let hasAllRequired = requiredFields.hasAll(request.resource.data.keys());
       
-      let numericFields = ['dcPower', 'acPower', 'ambientTemp', 'moduleTemp', 'irradiation'];
-      let hasValidNumbers = numericFields.every(field => 
-        request.resource.data[field] is number && request.resource.data[field] >= 0
-      );
+      let numericFields = ['dc_power', 'ac_power', 'ambient_temp', 'module_temp', 'irradiation'];
+      let hasValidNumbers = numericFields.hasAll(request.resource.data.keys()) &&
+        numericFields.every(field => request.resource.data[field] is number && request.resource.data[field] >= 0);
       
-      let validStatuses = ['active', 'maintenance_required', 'inactive'];
-      let hasValidStatus = !request.resource.data.status || 
-                          validStatuses.contains(request.resource.data.status);
-      
-      return hasAllRequired && hasValidNumbers && hasValidStatus;
+      return hasAllRequired && hasValidNumbers;
     }
     
     // Users collection
     match /users/{userId} {
-      // Users can read their own profiles, admins can read all profiles
       allow read: if isOwner(userId) || isAdmin();
-      
-      // Only admins can create users through the database directly
-      // (normal users are created through Firebase Authentication)
       allow create: if isAdmin();
-      
-      // Users can update their own profiles, admins can update any profile
       allow update: if isOwner(userId) || isAdmin();
-      
-      // Only admins can delete user profiles
       allow delete: if isAdmin();
     }
     
     // Maintenance records collection
     match /maintenance_records/{recordId} {
-      // All authenticated users can read maintenance records
       allow read: if isAuthenticated();
-      
-      // Admins and technicians can create maintenance records
       allow create: if (isAdmin() || isTechnician()) && isValidMaintenanceRecord();
-      
-      // Record owners (creators) and admins can update records
-      allow update: if (
-        isAdmin() || 
-        (isTechnician() && resource.data.createdBy == request.auth.uid)
-      ) && isValidMaintenanceRecord();
-      
-      // Only admins can delete maintenance records
+      allow update: if (isAdmin() || (isTechnician() && resource.data.createdBy == request.auth.uid)) && isValidMaintenanceRecord();
       allow delete: if isAdmin();
     }
     
-    // System metrics collection (dashboard statistics)
+    // System metrics collection
     match /system_metrics/{docId} {
-      // All authenticated users can read system metrics
       allow read: if isAuthenticated();
-      
-      // Only system processes or admins can write to system metrics
       allow write: if isAdmin();
     }
     
     // Notifications collection
     match /notifications/{notificationId} {
-      // All authenticated users can read notifications
       allow read: if isAuthenticated();
-      
-      // Only system processes or admins can create notifications
       allow create: if isAdmin();
-      
-      // Users can mark notifications as read
       allow update: if isAuthenticated() && 
-                     request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read', 'readAt', 'readBy']) &&
-                     request.resource.data.readBy == request.auth.uid;
-      
-      // Only admins can delete notifications
+                   request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read', 'readAt', 'readBy']) &&
+                   request.resource.data.readBy == request.auth.uid;
       allow delete: if isAdmin();
     }
     
     // Panels collection
     match /panels/{panelId} {
-      // Anyone can read panels
-      allow read: if true;
-      
-      // Only admins and technicians can create panels
-      allow create: if isAuthenticated() && (isAdmin() || isTechnician()) && isValidPanel();
-      
-      // Only admins and technicians can update panels
-      allow update: if isAuthenticated() && (isAdmin() || isTechnician()) && isValidPanel();
-      
-      // Only admins can delete panels
-      allow delete: if isAdmin();
+      allow read, write: if true;
     }
   }
 } 

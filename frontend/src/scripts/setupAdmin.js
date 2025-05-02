@@ -1,7 +1,7 @@
 // Script to create an admin user in Firebase
 const { initializeApp } = require('firebase/app');
-const { getAuth, createUserWithEmailAndPassword } = require('firebase/auth');
-const { getFirestore, doc, setDoc } = require('firebase/firestore');
+const { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } = require('firebase/auth');
+const { getFirestore, collection, doc, setDoc } = require('firebase/firestore');
 
 // Firebase configuration
 const firebaseConfig = {
@@ -21,53 +21,44 @@ const adminPassword = 'admin_password%';
 console.log('🔍 Setting up admin user...');
 
 // Initialize Firebase
-try {
-  const app = initializeApp(firebaseConfig);
-  console.log('✅ Firebase initialized successfully');
-  
-  // Get Auth and Firestore instances
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-  
-  console.log(`🔑 Creating admin user with email: ${adminEmail}`);
-  
-  // Create admin user
-  createUserWithEmailAndPassword(auth, adminEmail, adminPassword)
-    .then(async (userCredential) => {
-      console.log('✅ Admin user created successfully!', userCredential.user.uid);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+async function setupAdmin() {
+  try {
+    console.log('Setting up admin user...');
     
-      // Add admin user to Firestore
-      try {
-        await setDoc(doc(db, 'users', userCredential.user.uid), {
-          email: adminEmail,
+    // Try to sign in first
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, 'admin@solarai.com', 'admin_password%');
+      console.log('Admin user already exists:', userCredential.user.email);
+    } catch (error) {
+      if (error.code === 'auth/user-not-found') {
+        // Create admin user if it doesn't exist
+        console.log('Creating admin user...');
+        const userCredential = await createUserWithEmailAndPassword(auth, 'admin@solarai.com', 'admin_password%');
+        console.log('Admin user created:', userCredential.user.email);
+        
+        // Set admin role in Firestore
+        const userDoc = doc(db, 'users', userCredential.user.uid);
+        await setDoc(userDoc, {
+          email: 'admin@solarai.com',
           role: 'admin',
-          createdAt: new Date(),
-          displayName: 'SolarAI Admin'
+          createdAt: new Date().toISOString()
         });
-        console.log('✅ Admin user added to Firestore database');
-        console.log('🟢 YOU CAN NOW LOG IN WITH:');
-        console.log(`   Email: ${adminEmail}`);
-        console.log(`   Password: ${adminPassword}`);
-    process.exit(0);
-  } catch (error) {
-        console.error('❌ Error adding admin to Firestore:', error);
-        process.exit(1);
-      }
-    })
-    .catch((error) => {
-      // Handle errors - if user already exists, we can continue
-      if (error.code === 'auth/email-already-in-use') {
-        console.log('ℹ️ Admin user already exists');
-        console.log('🟢 YOU CAN NOW LOG IN WITH:');
-        console.log(`   Email: ${adminEmail}`);
-        console.log(`   Password: ${adminPassword}`);
-        process.exit(0);
+        console.log('Admin role set in Firestore');
       } else {
-        console.error('❌ Error creating admin user:', error.code, error.message);
-    process.exit(1);
+        throw error;
+      }
+    }
+    
+    console.log('Admin setup completed successfully');
+  } catch (error) {
+    console.error('Error setting up admin:', error);
+    console.error('Error code:', error.code);
+    console.error('Error message:', error.message);
   }
-    });
-} catch (error) {
-  console.error('❌ Firebase initialization failed:', error);
-  process.exit(1);
 }
+
+setupAdmin();

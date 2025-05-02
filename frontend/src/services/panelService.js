@@ -17,11 +17,13 @@ const validatePanelData = (panelData) => {
   // Required fields for basic panel data
   const requiredFields = [
     'name', 
-    'dcPower',
-    'acPower',
-    'ambientTemp',
-    'moduleTemp',
-    'irradiation'
+    'dc_power', 
+    'ac_power', 
+    'ambient_temp', 
+    'module_temp', 
+    'irradiation',
+    'status',
+    'location'
   ];
   
   const missingFields = requiredFields.filter(field => !panelData[field]);
@@ -32,11 +34,12 @@ const validatePanelData = (panelData) => {
 
   // Validate numeric fields
   const numericFields = [
-    'dcPower',
-    'acPower',
-    'ambientTemp',
-    'moduleTemp',
-    'irradiation'
+    'dc_power', 
+    'ac_power', 
+    'ambient_temp', 
+    'module_temp', 
+    'irradiation',
+    'efficiency'
   ];
   
   const invalidFields = numericFields.filter(field => 
@@ -48,12 +51,10 @@ const validatePanelData = (panelData) => {
     throw new Error(`Invalid numeric values for: ${invalidFields.join(', ')}`);
   }
 
-  // Validate status if provided
-  if (panelData.status) {
-    const validStatuses = ['active', 'maintenance_required', 'inactive'];
+  // Validate status
+  const validStatuses = ['active', 'inactive', 'maintenance', 'fault'];
   if (!validStatuses.includes(panelData.status)) {
     throw new Error(`Invalid status. Must be one of: ${validStatuses.join(', ')}`);
-    }
   }
 
   return true;
@@ -67,11 +68,11 @@ export const addPanel = async (panelData) => {
       ...panelData,
       createdAt: new Date(),
       updatedAt: new Date(),
-      status: panelData.status || 'active',
       lastMaintenance: panelData.lastMaintenance || null,
       maintenanceRequired: panelData.maintenanceRequired || false,
-      efficiency: calculateEfficiency(panelData.dcPower, panelData.acPower),
-      notes: panelData.notes || ''
+      efficiency: panelData.efficiency || 0.95,
+      notes: panelData.notes || '',
+      installation_date: panelData.installation_date || new Date()
     });
     
     return { id: docRef.id, ...panelData };
@@ -79,12 +80,6 @@ export const addPanel = async (panelData) => {
     console.error('Error adding panel:', error);
     throw error;
   }
-};
-
-// Helper function to calculate panel efficiency
-const calculateEfficiency = (dcPower, acPower) => {
-  if (!dcPower || !acPower) return 0;
-  return (acPower / dcPower) * 100;
 };
 
 export const getPanels = async () => {

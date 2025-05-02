@@ -1,6 +1,6 @@
 // Script to reset admin user password using Firebase Admin SDK
 const admin = require('firebase-admin');
-const serviceAccount = require('../../../backend/src/config/serviceAccountKey.json');
+const serviceAccount = require('../../../backend/src/configfirebase-adminsdk.json');
 
 // Initialize Firebase Admin
 if (admin.apps.length === 0) {
@@ -36,33 +36,7 @@ async function resetAdminPassword() {
     process.exit(0);
   } catch (error) {
     console.error('❌ Error resetting password:', error);
-    
-    // If user doesn't exist, create the admin user
-    if (error.code === 'auth/user-not-found') {
-      try {
-        console.log(`🔑 Creating new admin user: ${adminEmail}`);
-        const userRecord = await auth.createUser({
-          email: adminEmail,
-          password: newPassword,
-          displayName: 'SolarAI Admin',
-        });
-        
-        // Set custom claims for admin role
-        await auth.setCustomUserClaims(userRecord.uid, { admin: true });
-        
-        console.log('✅ Admin user created successfully!');
-        console.log('🟢 YOU CAN NOW LOG IN WITH:');
-        console.log(`   Email: ${adminEmail}`);
-        console.log(`   Password: ${newPassword}`);
-        
-        process.exit(0);
-      } catch (createError) {
-        console.error('❌ Error creating admin user:', createError);
-        process.exit(1);
-      }
-    } else {
-      process.exit(1);
-    }
+    process.exit(1);
   }
 }
 

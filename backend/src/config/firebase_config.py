@@ -5,8 +5,8 @@ import os
 def get_maintenance_collection():
     """Get the maintenance records collection from Firestore"""
     # Get the absolute path to the service account key file
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    service_account_path = os.path.join(current_dir, 'serviceAccountKey.json')
+    current_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    service_account_path = os.path.join(current_dir, 'configfirebase-adminsdk.json')
     
     if not os.path.exists(service_account_path):
         raise ValueError(f"Service account key file not found at: {service_account_path}")

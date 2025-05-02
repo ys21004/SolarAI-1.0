@@ -107,3 +107,8 @@ config/firebase-adminsdk.json
 **/firebase-adminsdk*.json
 **/configfirebase-adminsdk*.json
 **/solar-ai-*-firebase-adminsdk-*.json
+
+# Firebase
+.firebase/
+ui-debug.log
+.runtimeconfig.json

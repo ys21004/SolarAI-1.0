@@ -20,8 +20,12 @@ const HistoryPage = () => {
     try {
       setLoading(true);
       const response = await apiService.getMaintenanceHistory(filters);
-      setRecords(response.records);
-      setError(null);
+      if (response.status === 'success') {
+        setRecords(response.records);
+        setError(null);
+      } else {
+        setError('Failed to fetch maintenance history');
+      }
     } catch (err) {
       setError(err.message || 'Failed to fetch maintenance history');
     } finally {

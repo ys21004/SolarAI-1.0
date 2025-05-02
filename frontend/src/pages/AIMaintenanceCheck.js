@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -16,7 +16,7 @@ import { apiService } from '../services/apiService';
 import { usePanels } from '../context/PanelsContext';
 
 const AIMaintenanceCheck = () => {
-  const { panels, loading } = usePanels();
+  const { panels, loading, error: panelsError } = usePanels();
   const [selectedPanel, setSelectedPanel] = useState('');
   const [formData, setFormData] = useState({
     dc_power: '',
@@ -29,8 +29,18 @@ const AIMaintenanceCheck = () => {
   const [error, setError] = useState(null);
   const [prediction, setPrediction] = useState(null);
 
+  useEffect(() => {
+    console.log('AIMaintenanceCheck - Component mounted');
+    console.log('AIMaintenanceCheck - Current panels:', panels);
+    console.log('AIMaintenanceCheck - Loading state:', loading);
+    console.log('AIMaintenanceCheck - Error state:', panelsError);
+    console.log('AIMaintenanceCheck - Selected panel:', selectedPanel);
+    console.log('AIMaintenanceCheck - Form data:', formData);
+  }, [panels, loading, panelsError, selectedPanel, formData]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
+    console.log('Form field changed:', name, value);
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -38,22 +48,41 @@ const AIMaintenanceCheck = () => {
   };
 
   const handlePanelChange = (e) => {
-    const panelName = e.target.value;
-    setSelectedPanel(panelName);
-    const panel = panels.find(p => p.name === panelName);
+    const panelId = e.target.value;
+    console.log('Panel selection changed:', panelId);
+    setSelectedPanel(panelId);
+    
+    // Find the selected panel
+    const panel = panels.find(p => p.id === panelId);
+    console.log('Found panel:', panel);
+    
     if (panel) {
+      // Convert string values to numbers and handle missing values
+      const formData = {
+        dc_power: panel.dc_power ? parseFloat(panel.dc_power) : '',
+        ac_power: panel.ac_power ? parseFloat(panel.ac_power) : '',
+        ambient_temp: panel.ambient_temp ? parseFloat(panel.ambient_temp) : '',
+        module_temp: panel.module_temp ? parseFloat(panel.module_temp) : '',
+        irradiation: panel.irradiation ? parseFloat(panel.irradiation) : '',
+      };
+      
+      console.log('Setting form data from panel:', formData);
+      setFormData(formData);
+    } else {
+      console.log('Panel not found, resetting form data');
       setFormData({
-        dc_power: panel.dc_power,
-        ac_power: panel.ac_power,
-        ambient_temp: panel.ambient_temp,
-        module_temp: panel.module_temp,
-        irradiation: panel.irradiation,
+        dc_power: '',
+        ac_power: '',
+        ambient_temp: '',
+        module_temp: '',
+        irradiation: '',
       });
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('Form submitted with data:', { selectedPanel, formData });
     setLoadingApi(true);
     setError(null);
     setPrediction(null);
@@ -69,6 +98,8 @@ const AIMaintenanceCheck = () => {
         irradiation: parseFloat(formData.irradiation),
       };
       
+      console.log('Validated numeric data:', numericData);
+      
       for (const [key, value] of Object.entries(numericData)) {
         if (isNaN(value)) {
           throw new Error(`Invalid value for ${key}`);
@@ -81,13 +112,15 @@ const AIMaintenanceCheck = () => {
       
       if (response.status === 'success' && response.prediction) {
         setPrediction({
-          prediction: response.prediction.prediction,
+          needsMaintenance: response.prediction.needs_maintenance,
           confidence: response.prediction.confidence,
+          efficiency: response.prediction.efficiency,
+          issues: response.prediction.issues,
           timestamp: response.prediction.timestamp
         });
       } else {
         console.error('Invalid response format:', response);
-        setError(response.error || 'Invalid response from server');
+        setError(response.message || 'Invalid response from server');
       }
     } catch (err) {
       console.error('Prediction error:', err);
@@ -98,7 +131,32 @@ const AIMaintenanceCheck = () => {
   };
 
   if (loading) {
-    return <Typography>Loading...</Typography>;
+    return (
+      <Box sx={{ p: 3, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+        <CircularProgress />
+        <Typography sx={{ ml: 2 }}>Loading panels...</Typography>
+      </Box>
+    );
+  }
+
+  if (panelsError) {
+    return (
+      <Box sx={{ p: 3 }}>
+        <Alert severity="error" sx={{ mb: 3 }}>
+          Error loading panels: {panelsError}
+        </Alert>
+      </Box>
+    );
+  }
+
+  if (!panels || panels.length === 0) {
+    return (
+      <Box sx={{ p: 3 }}>
+        <Alert severity="info" sx={{ mb: 3 }}>
+          No panels found in the database. Please add some panels first.
+        </Alert>
+      </Box>
+    );
   }
 
   return (
@@ -120,8 +178,8 @@ const AIMaintenanceCheck = () => {
                 required
               >
                 {panels.map((panel) => (
-                  <MenuItem key={panel.name} value={panel.name}>
-                    {panel.name}
+                  <MenuItem key={panel.id} value={panel.id}>
+                    {panel.name} - {panel.location}
                   </MenuItem>
                 ))}
               </TextField>
@@ -170,7 +228,7 @@ const AIMaintenanceCheck = () => {
                 required
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
                 label="Irradiation (W/m²)"
@@ -186,10 +244,10 @@ const AIMaintenanceCheck = () => {
                 type="submit"
                 variant="contained"
                 color="primary"
-                fullWidth
                 disabled={loadingApi}
+                fullWidth
               >
-                {loadingApi ? <CircularProgress size={24} /> : 'Analyze'}
+                {loadingApi ? <CircularProgress size={24} /> : 'Run Maintenance Check'}
               </Button>
             </Grid>
           </Grid>
@@ -197,29 +255,65 @@ const AIMaintenanceCheck = () => {
       </Paper>
 
       {error && (
-        <Alert severity="error" sx={{ mb: 2 }}>
+        <Alert severity="error" sx={{ mb: 3 }}>
           {error}
         </Alert>
       )}
 
       {prediction && (
-        <Card sx={{ 
-          bgcolor: prediction.prediction ? 'error.light' : 'success.light',
-          color: 'white',
-          mb: 2
-        }}>
-          <CardContent>
-            <Typography variant="h5" gutterBottom>
-              {prediction.prediction ? 'Maintenance Required' : 'System OK'}
+        <Paper sx={{ p: 3, mt: 3 }}>
+          <Typography variant="h6" gutterBottom>
+            Maintenance Check Results
+          </Typography>
+          
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Alert 
+                severity={prediction.needsMaintenance ? "warning" : "success"}
+                sx={{ mb: 2 }}
+              >
+                {prediction.needsMaintenance 
+                  ? "Maintenance Required" 
+                  : "No Maintenance Required"}
+              </Alert>
+            </Grid>
+            
+            <Grid item xs={12} sm={6}>
+              <Typography variant="subtitle1">
+                Confidence: {prediction.confidence}%
+              </Typography>
+            </Grid>
+            
+            <Grid item xs={12} sm={6}>
+              <Typography variant="subtitle1">
+                Efficiency: {prediction.efficiency}%
             </Typography>
-            <Typography variant="body1">
-              Confidence: {(prediction.confidence * 100).toFixed(2)}%
+            </Grid>
+            
+            {prediction.issues && prediction.issues.length > 0 && (
+              <Grid item xs={12}>
+                <Typography variant="subtitle1" gutterBottom>
+                  Detected Issues:
             </Typography>
+                <ul>
+                  {prediction.issues.map((issue, index) => (
+                    <li key={index}>
             <Typography variant="body2">
-              Timestamp: {new Date(prediction.timestamp).toLocaleString()}
+                        {issue}
+                      </Typography>
+                    </li>
+                  ))}
+                </ul>
+              </Grid>
+            )}
+            
+            <Grid item xs={12}>
+              <Typography variant="caption" color="text.secondary">
+                Analysis performed at: {new Date(prediction.timestamp).toLocaleString()}
             </Typography>
-          </CardContent>
-        </Card>
+            </Grid>
+          </Grid>
+        </Paper>
       )}
     </Box>
   );

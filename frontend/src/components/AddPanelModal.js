@@ -16,12 +16,11 @@ function AddPanelModal({ open, onClose }) {
   const { addPanel, loading, error } = usePanels();
   const [panelData, setPanelData] = useState({
     name: '',
-    dcPower: '',
-    acPower: '',
-    ambientTemp: '',
-    moduleTemp: '',
+    dc_power: '',
+    ac_power: '',
+    ambient_temp: '',
+    module_temp: '',
     irradiation: '',
-    status: 'active'
   });
   const [validationError, setValidationError] = useState('');
 
@@ -36,7 +35,7 @@ function AddPanelModal({ open, onClose }) {
   };
 
   const validateForm = () => {
-    const requiredFields = ['name', 'dcPower', 'acPower', 'ambientTemp', 'moduleTemp', 'irradiation'];
+    const requiredFields = ['name', 'dc_power', 'ac_power', 'ambient_temp', 'module_temp', 'irradiation'];
     const emptyFields = requiredFields.filter(field => !panelData[field]);
     
     if (emptyFields.length > 0) {
@@ -45,7 +44,7 @@ function AddPanelModal({ open, onClose }) {
     }
 
     // Validate numeric values
-    const numericFields = ['dcPower', 'acPower', 'ambientTemp', 'moduleTemp', 'irradiation'];
+    const numericFields = ['dc_power', 'ac_power', 'ambient_temp', 'module_temp', 'irradiation'];
     const invalidFields = numericFields.filter(field => isNaN(parseFloat(panelData[field])));
     
     if (invalidFields.length > 0) {
@@ -60,26 +59,15 @@ function AddPanelModal({ open, onClose }) {
     if (!validateForm()) return;
 
     try {
-      // Convert string values to numbers
-      const processedData = {
-        ...panelData,
-        dcPower: parseFloat(panelData.dcPower),
-        acPower: parseFloat(panelData.acPower),
-        ambientTemp: parseFloat(panelData.ambientTemp),
-        moduleTemp: parseFloat(panelData.moduleTemp),
-        irradiation: parseFloat(panelData.irradiation)
-      };
-
-      await addPanel(processedData);
+      await addPanel(panelData);
       // Reset form and close modal on success
       setPanelData({
         name: '',
-        dcPower: '',
-        acPower: '',
-        ambientTemp: '',
-        moduleTemp: '',
+        dc_power: '',
+        ac_power: '',
+        ambient_temp: '',
+        module_temp: '',
         irradiation: '',
-        status: 'active'
       });
       onClose();
     } catch (error) {
@@ -113,9 +101,9 @@ function AddPanelModal({ open, onClose }) {
             <TextField
               fullWidth
               label="DC Power (W)"
-              name="dcPower"
+              name="dc_power"
               type="number"
-              value={panelData.dcPower}
+              value={panelData.dc_power}
               onChange={handleChange}
               required
               disabled={loading}
@@ -125,9 +113,9 @@ function AddPanelModal({ open, onClose }) {
             <TextField
               fullWidth
               label="AC Power (W)"
-              name="acPower"
+              name="ac_power"
               type="number"
-              value={panelData.acPower}
+              value={panelData.ac_power}
               onChange={handleChange}
               required
               disabled={loading}
@@ -137,9 +125,9 @@ function AddPanelModal({ open, onClose }) {
             <TextField
               fullWidth
               label="Ambient Temperature (°C)"
-              name="ambientTemp"
+              name="ambient_temp"
               type="number"
-              value={panelData.ambientTemp}
+              value={panelData.ambient_temp}
               onChange={handleChange}
               required
               disabled={loading}
@@ -149,9 +137,9 @@ function AddPanelModal({ open, onClose }) {
             <TextField
               fullWidth
               label="Module Temperature (°C)"
-              name="moduleTemp"
+              name="module_temp"
               type="number"
-              value={panelData.moduleTemp}
+              value={panelData.module_temp}
               onChange={handleChange}
               required
               disabled={loading}

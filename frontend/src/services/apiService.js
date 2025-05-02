@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5001/api';
+const API_BASE_URL = 'http://localhost:5000/api';
 
 export const apiService = {
   createMaintenanceRecord: async (record) => {
@@ -107,7 +107,7 @@ export const apiService = {
       console.log('AI maintenance check response:', response.data);
       
       if (response.data.status === 'error') {
-        throw new Error(response.data.error || 'Unknown error occurred');
+        throw new Error(response.data.message || 'Unknown error occurred');
       }
       
       return response.data;
@@ -115,7 +115,7 @@ export const apiService = {
       console.error('Error performing AI maintenance check:', error);
       if (error.response?.data) {
         throw {
-          message: error.response.data.error || 'Failed to perform AI maintenance check',
+          message: error.response.data.message || 'Failed to perform AI maintenance check',
           status: error.response.data.status || 'error'
         };
       }

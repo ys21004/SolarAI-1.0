@@ -1,0 +1,2 @@
+firebase-adminsdk.json
+solar-ai-6545a-firebase-adminsdk-*.json

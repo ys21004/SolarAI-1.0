@@ -131,6 +131,7 @@ def ai_maintenance_check():
         data = request.json
         required_fields = ['panelId', 'dc_power', 'ac_power', 'ambient_temp', 'module_temp', 'irradiation']
         
+        # Validate required fields
         for field in required_fields:
             if field not in data:
                 return jsonify({
@@ -138,8 +139,52 @@ def ai_maintenance_check():
                     'message': f'Missing required field: {field}'
                 }), 400
         
-        # Get prediction from ML model
-        prediction = predictor.predict(data)
+        # Convert numeric fields to float
+        numeric_fields = ['dc_power', 'ac_power', 'ambient_temp', 'module_temp', 'irradiation']
+        for field in numeric_fields:
+            try:
+                data[field] = float(data[field])
+            except (ValueError, TypeError):
+                return jsonify({
+                    'status': 'error',
+                    'message': f'Invalid value for {field}. Must be a number.'
+                }), 400
+        
+        # Calculate efficiency
+        efficiency = (data['ac_power'] / data['dc_power']) * 100 if data['dc_power'] > 0 else 0
+        
+        # Simple maintenance prediction logic (replace with actual ML model)
+        needs_maintenance = False
+        confidence = 0.0
+        issues = []
+        
+        # Check efficiency
+        if efficiency < 80:
+            needs_maintenance = True
+            confidence += 0.4
+            issues.append("Low efficiency detected")
+        
+        # Check temperature difference
+        temp_diff = data['module_temp'] - data['ambient_temp']
+        if temp_diff > 30:
+            needs_maintenance = True
+            confidence += 0.3
+            issues.append("High temperature difference detected")
+        
+        # Check power output
+        if data['dc_power'] < 200:
+            needs_maintenance = True
+            confidence += 0.3
+            issues.append("Low power output detected")
+        
+        # Create prediction object
+        prediction = {
+            'needs_maintenance': needs_maintenance,
+            'confidence': round(confidence * 100, 2),
+            'efficiency': round(efficiency, 2),
+            'issues': issues,
+            'timestamp': datetime.now().isoformat()
+        }
         
         # Save the check to maintenance history
         maintenance_collection = get_maintenance_collection()
@@ -166,6 +211,7 @@ def ai_maintenance_check():
             'record_id': doc_ref[1].id
         }), 200
     except Exception as e:
+        print(f"Error in AI maintenance check: {str(e)}")
         return jsonify({
             'status': 'error',
             'message': str(e)
