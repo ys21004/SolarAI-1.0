@@ -3,6 +3,7 @@ import { Box, Typography, Paper, Grid, Button } from '@mui/material';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import AddIcon from '@mui/icons-material/Add';
 import AddPanelModal from '../components/AddPanelModal';
+import PanelList from '../components/PanelList';
 import { usePanels } from '../context/PanelsContext';
 
 const Dashboard = () => {
@@ -130,10 +131,14 @@ const Dashboard = () => {
               <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 300 }}>
                 <Typography variant="body1" color="textSecondary">
                   No panel data available. Add a panel to see temperature metrics.
-            </Typography>
+                </Typography>
               </Box>
             )}
           </Paper>
+        </Grid>
+
+        <Grid item xs={12}>
+          <PanelList />
         </Grid>
       </Grid>
 

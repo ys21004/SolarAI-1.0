@@ -27,6 +27,18 @@ const MaintenanceHistory = () => {
     fetchMaintenanceRecords();
   }, []);
 
+  const formatTimestamp = (timestamp) => {
+    if (!timestamp) return 'N/A';
+    const date = new Date(timestamp);
+    return date.toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
@@ -52,7 +64,7 @@ const MaintenanceHistory = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Date</TableCell>
+              <TableCell>Date & Time</TableCell>
               <TableCell>Panel ID</TableCell>
               <TableCell>Technician</TableCell>
               <TableCell>Type</TableCell>
@@ -64,7 +76,7 @@ const MaintenanceHistory = () => {
             {maintenanceRecords.length > 0 ? (
               maintenanceRecords.map((record) => (
                 <TableRow key={record.id}>
-                  <TableCell>{new Date(record.timestamp).toLocaleDateString()}</TableCell>
+                  <TableCell>{formatTimestamp(record.timestamp)}</TableCell>
                   <TableCell>{record.panelId}</TableCell>
                   <TableCell>{record.technicianName}</TableCell>
                   <TableCell>{record.type}</TableCell>

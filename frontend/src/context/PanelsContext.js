@@ -1,5 +1,5 @@
 import React from 'react';
-import { addPanel, getPanels } from '../services/panelService';
+import { addPanel, getPanels, deletePanel as deletePanelService } from '../services/panelService';
 import { db, auth } from '../config/firebase';
 import { collection, onSnapshot, query, orderBy, getDocs } from 'firebase/firestore';
 import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
@@ -9,7 +9,8 @@ const PanelsContext = React.createContext({
   loading: true,
   error: null,
   fetchPanels: () => {},
-  addPanel: () => {}
+  addPanel: () => {},
+  deletePanel: () => {}
 });
 
 export function PanelsProvider({ children }) {
@@ -35,6 +36,16 @@ export function PanelsProvider({ children }) {
       createdAt: panel.createdAt,
       updatedAt: panel.updatedAt
     };
+  };
+
+  const deletePanel = async (panelId) => {
+    try {
+      await deletePanelService(panelId);
+      // The panels list will be updated automatically through the real-time listener
+    } catch (error) {
+      console.error('Error deleting panel:', error);
+      throw error;
+    }
   };
 
   const authenticate = async () => {
@@ -238,7 +249,8 @@ export function PanelsProvider({ children }) {
     loading,
     error,
     fetchPanels,
-    addPanel: addNewPanel
+    deletePanel,
+    addNewPanel
   };
 
   console.log('Current panels state:', panels);

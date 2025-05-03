@@ -9,6 +9,7 @@ import {
   Grid,
   Alert,
   CircularProgress,
+  MenuItem,
 } from '@mui/material';
 import { usePanels } from '../context/PanelsContext';
 
@@ -21,6 +22,8 @@ function AddPanelModal({ open, onClose }) {
     ambient_temp: '',
     module_temp: '',
     irradiation: '',
+    status: 'active',
+    location: '',
   });
   const [validationError, setValidationError] = useState('');
 
@@ -35,7 +38,7 @@ function AddPanelModal({ open, onClose }) {
   };
 
   const validateForm = () => {
-    const requiredFields = ['name', 'dc_power', 'ac_power', 'ambient_temp', 'module_temp', 'irradiation'];
+    const requiredFields = ['name', 'dc_power', 'ac_power', 'ambient_temp', 'module_temp', 'irradiation', 'status', 'location'];
     const emptyFields = requiredFields.filter(field => !panelData[field]);
     
     if (emptyFields.length > 0) {
@@ -49,6 +52,13 @@ function AddPanelModal({ open, onClose }) {
     
     if (invalidFields.length > 0) {
       setValidationError(`Invalid values for: ${invalidFields.join(', ')}. Please enter numbers only.`);
+      return false;
+    }
+
+    // Validate status
+    const validStatuses = ['active', 'inactive', 'maintenance', 'fault'];
+    if (!validStatuses.includes(panelData.status)) {
+      setValidationError(`Invalid status. Must be one of: ${validStatuses.join(', ')}`);
       return false;
     }
 
@@ -68,6 +78,8 @@ function AddPanelModal({ open, onClose }) {
         ambient_temp: '',
         module_temp: '',
         irradiation: '',
+        status: 'active',
+        location: '',
       });
       onClose();
     } catch (error) {
@@ -96,6 +108,34 @@ function AddPanelModal({ open, onClose }) {
               required
               disabled={loading}
             />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Location"
+              name="location"
+              value={panelData.location}
+              onChange={handleChange}
+              required
+              disabled={loading}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              select
+              label="Status"
+              name="status"
+              value={panelData.status}
+              onChange={handleChange}
+              required
+              disabled={loading}
+            >
+              <MenuItem value="active">Active</MenuItem>
+              <MenuItem value="inactive">Inactive</MenuItem>
+              <MenuItem value="maintenance">Maintenance</MenuItem>
+              <MenuItem value="fault">Fault</MenuItem>
+            </TextField>
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
